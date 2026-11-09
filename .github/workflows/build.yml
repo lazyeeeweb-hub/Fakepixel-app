@@ -9,12 +9,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
       - name: Unzip and build
         run: |
           unzip -q *.zip -d project
-          cd "$(dirname "$(find project -name gradlew | head -n1)")"
-          chmod +x gradlew
-          ./gradlew build
+          cd "$(dirname "$(find project -name 'build.gradle*' | head -n1)")"
+          gradle build --no-daemon
           echo "DIR=$PWD" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
