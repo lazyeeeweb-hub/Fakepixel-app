@@ -1,0 +1,22 @@
+herename: build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Unzip and build
+        run: |
+          unzip -q *.zip -d project
+          cd "$(dirname "$(find project -name gradlew | head -n1)")"
+          chmod +x gradlew
+          ./gradlew build
+          echo "DIR=$PWD" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mod-jar
+          path: ${{ env.DIR }}/build/libs/*.jar
