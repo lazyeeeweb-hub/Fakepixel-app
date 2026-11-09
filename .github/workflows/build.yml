@@ -16,6 +16,18 @@ jobs:
         run: |
           unzip -q *.zip -d project
           cd "$(dirname "$(find project -name 'build.gradle*' | head -n1)")"
+          sed -i 's/1\.6-SNAPSHOT/1.6.12/' build.gradle
+          {
+            echo 'pluginManagement {'
+            echo '    repositories {'
+            echo '        maven { url = "https://maven.fabricmc.net/" }'
+            echo '        mavenCentral()'
+            echo '        gradlePluginPortal()'
+            echo '    }'
+            echo '}'
+            [ -f settings.gradle ] && cat settings.gradle
+          } > settings.new
+          mv settings.new settings.gradle
           gradle build --no-daemon
           echo "DIR=$PWD" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v4
