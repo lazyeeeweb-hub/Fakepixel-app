@@ -30,9 +30,11 @@ jobs:
             } > settings.new
             mv settings.new settings.gradle
           fi
-          gradle build --no-daemon
+          gradle build -x test --no-daemon
           echo "DIR=$PWD" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
           name: mod-jar
-          path: ${{ env.DIR }}/build/libs/*.jar
+          path: |
+            ${{ env.DIR }}/build/libs/*.jar
+            !${{ env.DIR }}/build/libs/*-sources.jar
